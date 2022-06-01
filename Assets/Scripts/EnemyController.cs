@@ -28,11 +28,17 @@ public class EnemyController : MonoBehaviour
 
     private EnemySpawner spawner;
 
+    //Variables del Player
+
+    private Controller player;
+
     private void Awake()
     {
         //Accedemos al spawner de enemigos
 
         spawner = GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>();
+
+        player = GameObject.Find("Player").GetComponent<Controller>();
     }
 
     void Update()
@@ -48,6 +54,7 @@ public class EnemyController : MonoBehaviour
             transform.parent.gameObject.SetActive(false);
             spawner.DeadEnemy = spawner.DeadEnemy + 1;
             spawner.Enemynumber = spawner.Enemynumber - 1;
+            player.Puntos = player.Puntos + 100;
         }
     }
 

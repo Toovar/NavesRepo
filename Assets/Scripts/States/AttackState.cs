@@ -19,11 +19,12 @@ public class AttackState : StateMachineBehaviour
     {
         //Disparamos balas mientras se ejecuta la animación
 
+        if (boss.gameObject.activeInHierarchy != false)
         boss.StartCoroutine("Fire");
 
         //Si al boss le queda la mitad de la vida, disparamos además balas que apuntan al player
 
-        if (boss.fase2 == true)
+        if (boss.fase2 == true && boss.gameObject.activeInHierarchy != false)
             boss.StartCoroutine("FireFocus");
     }
 }

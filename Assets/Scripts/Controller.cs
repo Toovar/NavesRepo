@@ -57,9 +57,15 @@ public class Controller : MonoBehaviour
 
     public int HP = 100;
 
+    public int DeathCount = 0;
+
     //Bool para declarar al player como invencible
 
     public bool invincible = false;
+
+    //Puntos del Player
+
+    public int Puntos;
 
     void Update()
     {
@@ -119,6 +125,8 @@ public class Controller : MonoBehaviour
             particles.SetActive(true);
 
             gameObject.SetActive(false);
+
+            DeathCount = DeathCount + 1;
         }
 
         //DASH

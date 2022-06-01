@@ -18,7 +18,21 @@ public class CanvasController : MonoBehaviour
 
     public GameObject GameOverPanel;
 
+    public GameObject MenuPanel;
+
     public Slider slider;
+
+    //Delay para activar o desactivar la pausa
+
+    bool delayTime = true;
+
+    //Referencia para guardar las estadísticas
+
+    public StatsManager SaveData;
+
+    //Referencia para guardar los puntos
+
+    public RankingManager ranking;
 
     void Start()
     {
@@ -52,6 +66,28 @@ public class CanvasController : MonoBehaviour
 
             StartCoroutine("GameOver");
         }
+
+        //Mostrar y quitar Menu
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (MenuPanel.activeInHierarchy == false && delayTime == true)
+            {
+                StartCoroutine("Delay");
+
+                MenuPanel.SetActive(true);
+
+                Time.timeScale = 0f;
+            }
+            else if (MenuPanel.activeInHierarchy == true && delayTime == true)
+            {
+                StartCoroutine("Delay");
+
+                MenuPanel.SetActive(false);
+
+                Time.timeScale = 1f;
+            }
+        }
     }
 
     //Recargar escena actual
@@ -60,7 +96,26 @@ public class CanvasController : MonoBehaviour
     {
         Time.timeScale = 1f;
 
+        SaveData.SaveGameStats();
+
+        ranking.InsertarPuntos(PlayerInput.PlayerName, player.Puntos);
+
         SceneManager.LoadScene("Naves");
+    }
+
+    //Volver al juego
+
+    public void Resume()
+    {
+        StartCoroutine("Delay");
+
+        SaveData.SaveGameStats();
+
+        ranking.InsertarPuntos(PlayerInput.PlayerName, player.Puntos);
+
+        MenuPanel.SetActive(false);
+
+        Time.timeScale = 1f;
     }
 
     //Volver al menu principal y desactivamos el checkpoint del jefe
@@ -69,10 +124,25 @@ public class CanvasController : MonoBehaviour
     {
         Time.timeScale = 1f;
 
-        EnemySpawner.BossCP = false;
+        if (EnemySpawner.BossCP == true)
+            EnemySpawner.BossCP = false;
+
+        SaveData.SaveGameStats();
+
+        ranking.InsertarPuntos(PlayerInput.PlayerName, player.Puntos);
 
         SceneManager.LoadScene("MainMenu");
     }
+
+    IEnumerator Delay()
+    {
+        delayTime = false;
+
+        yield return new WaitForSecondsRealtime(0.3f);
+
+        delayTime = true;
+    }
+
 
     //Delay para que aparezca la pantalla de game over
 
@@ -90,6 +160,10 @@ public class CanvasController : MonoBehaviour
         yield return new WaitForSecondsRealtime(6f);
 
         Time.timeScale = 1f;
+
+        SaveData.SaveGameStats();
+
+        ranking.InsertarPuntos(PlayerInput.PlayerName, player.Puntos);
 
         EnemySpawner.BossCP = false;
 
